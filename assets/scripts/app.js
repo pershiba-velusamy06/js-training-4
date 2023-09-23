@@ -11,18 +11,30 @@ class Product {
 
 
 class ShoppingCart {
-   items = [];
+  items = [];
 
-  addProduct(product){
-    this.items.push(product)
-    this.totalOutput.innerHTML = `<h2>Total: \$${1}</h2>`;
+  set CartItems(value) {
+    this.items = value;
+    this.totalOutput.innerHTML = `<h2>Total: \$${this.totalAmount}</h2>`;
+
+  }
+  get totalAmount() {
+    const sum = this.items.reduce((prevValue, curtVal) => prevValue + curtVal.price, 0);
+    return sum
+  }
+
+  addProduct(product) {
+    let updatedItem = [...this.items]
+    updatedItem.push(product)
+    this.CartItems = updatedItem
+
   }
   render() {
     const cartEl = document.createElement('section');
     cartEl.innerHTML = `<h2>Total</h2>
   <button>Order now</button>`;
     cartEl.className = 'cart';
-    this.totalOutput=cartEl.querySelector('h2')
+    this.totalOutput = cartEl.querySelector('h2')
     return cartEl;
   }
 
@@ -34,9 +46,9 @@ class ProductItem {
   }
 
   addToCart() {
-     console.log('Adding product to cart...');
-     console.log(this.product); 
-  App.addProductTocart(this.product)
+    console.log('Adding product to cart...');
+    console.log(this.product);
+    App.addProductTocart(this.product)
     //`<h2>Total</h2>
   }
 
@@ -97,7 +109,7 @@ class Shop {
     const renderHook = document.getElementById('app');
 
     this.cart = new ShoppingCart()
-    const CartEl =  this.cart.render();
+    const CartEl = this.cart.render();
     const productList = new ProductList();
     const prodListEle = productList.render();
     renderHook.append(prodListEle);
@@ -106,17 +118,17 @@ class Shop {
 }
 
 
-class App{
-  static init(){
+class App {
+  static init() {
 
     const shop = new Shop();
 
     shop.render();
-    this.cart=shop.cart;
+    this.cart = shop.cart;
   }
 
-  static addProductTocart(product){
-this.cart.addProduct(product)
+  static addProductTocart(product) {
+    this.cart.addProduct(product)
   }
 }
 App.init()
